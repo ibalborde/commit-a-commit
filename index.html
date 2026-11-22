@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commit a Commit uploader</title>
+<meta name="description" content="Herramienta interna del canal de YouTube Commit a Commit para subir sus propios videos con la YouTube Data API.">
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<main>
+<header><img src="logo.png" alt="Logo de Commit a Commit"><a href="./">Commit a Commit</a></header>
+
+<h1>Commit a Commit uploader</h1>
+<p class="meta">Herramienta interna del canal de YouTube <a href="https://www.youtube.com/channel/UC5VvN3Wkh8wAPUPtcKfBgPg">Commit a Commit</a>.</p>
+
+<div class="panel">
+<p><strong>Commit a Commit</strong> es un canal en español sobre Swift y desarrollo iOS: cada semana, una pregunta de entrevista explicada en 2 minutos, con el código en pantalla y subtítulos en español e inglés.</p>
+<p><strong>Commit a Commit uploader</strong> es un script privado que usa el dueño del canal en su propia computadora para publicar esos videos. No es una app pública: no tiene usuarios externos, no tiene registro ni inicio de sesión para terceros, y no se distribuye.</p>
+</div>
+
+<h2>Qué hace</h2>
+<p>Con la YouTube Data API v3 y la autorización OAuth del dueño del canal, el script:</p>
+<ul>
+<li>sube los videos del canal (versión larga y Short) con su título, descripción y etiquetas, y los programa;</li>
+<li>sube la miniatura y los subtítulos en español e inglés de cada video;</li>
+<li>agrega cada video a la lista de reproducción de la serie;</li>
+<li>consulta el nombre y el ID del propio canal y sus listas para confirmar que publica en el canal correcto.</li>
+</ul>
+<p>Solo actúa sobre el canal Commit a Commit. No lee, modifica ni publica contenido de otros usuarios o canales.</p>
+
+<hr>
+
+<h1 lang="en">Commit a Commit uploader</h1>
+<p class="meta" lang="en">Internal tool of the YouTube channel <a href="https://www.youtube.com/channel/UC5VvN3Wkh8wAPUPtcKfBgPg">Commit a Commit</a>.</p>
+<div lang="en">
+<p><strong>Commit a Commit</strong> is a Spanish-language channel about Swift and iOS development: every week, one interview question explained in 2 minutes, with the code on screen and Spanish and English subtitles.</p>
+<p><strong>Commit a Commit uploader</strong> is a private script that the channel owner runs on their own computer to publish those videos. It is not a public app: it has no external users, no sign-up or sign-in for third parties, and it is not distributed.</p>
+<h2>What it does</h2>
+<p>Using the YouTube Data API v3 and the channel owner's OAuth authorization, the script:</p>
+<ul>
+<li>uploads the channel's videos (long version and Short) with their title, description and tags, and schedules them;</li>
+<li>uploads each video's thumbnail and Spanish and English captions;</li>
+<li>adds each video to the series playlist;</li>
+<li>reads the channel's own name, ID and playlists to confirm it publishes to the right channel.</li>
+</ul>
+<p>It only acts on the Commit a Commit channel. It does not read, modify or publish content from any other user or channel.</p>
+</div>
+
+<footer>
+<a href="privacidad.html">Política de privacidad / Privacy Policy</a>
+<a href="condiciones.html">Condiciones del servicio / Terms of Service</a>
+<p>Contacto / Contact: <a href="mailto:commitacommit.dev@gmail.com">commitacommit.dev@gmail.com</a></p>
+</footer>
+</main>
+</body>
+</html>
