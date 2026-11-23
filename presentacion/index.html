@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commit a Commit: cómo automatizamos el canal</title>
+<meta name="description" content="Cómo automatizamos el canal de iOS Commit a Commit: contenido, voz, video, subtítulos y publicación programada en YouTube, TikTok y LinkedIn.">
+<meta property="og:title" content="Commit a Commit: cómo automatizamos el canal">
+<meta property="og:description" content="Cómo automatizamos el canal de iOS Commit a Commit: contenido, voz, video, subtítulos y publicación programada en YouTube, TikTok y LinkedIn.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../logo.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --fondo: #15101c;
+  --panel: #1f1729;
+  --hondo: #0e0a14;
+  --naranja: #ff7a3d;
+  --lila: #b69cff;
+  --amarillo: #ffd36e;
+  --texto: #f6f2fb;
+  --suave: #c9bfd6;
+}
+
+body { font-family: 'Inter', Arial, sans-serif; color: var(--texto); }
+
+section {
+  padding: 128px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: 'Inter', Arial, sans-serif;
+}
+section.alt { background: var(--panel); }
+section.acento { background: var(--naranja); color: var(--fondo); }
+
+.eyebrow { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; font-weight: 600; letter-spacing: 3px; color: var(--naranja); margin: 0 0 24px; }
+.titulo { font-size: 72px; font-weight: 700; line-height: 1.08; margin: 0 0 48px; color: var(--texto); }
+.portada { font-size: 120px; font-weight: 700; line-height: 1.02; margin: 0 0 40px; color: var(--texto); }
+.lead { font-size: 32px; line-height: 1.45; color: var(--suave); margin: 0 0 40px; }
+.nota { font-size: 24px; line-height: 1.4; color: var(--suave); margin: 32px 0 0; }
+
+.fila { display: flex; gap: 32px; }
+.col { display: flex; flex-direction: column; gap: 24px; flex: 1; }
+.card { flex: 1; background: var(--panel); border-radius: 16px; padding: 36px 40px; display: flex; flex-direction: column; gap: 16px; }
+section.alt .card { background: var(--fondo); }
+.card h3 { font-size: 32px; font-weight: 700; color: var(--texto); margin: 0; line-height: 1.2; }
+.card .txt { font-size: 24px; line-height: 1.45; color: var(--suave); margin: 0; }
+.card .dato { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; color: var(--lila); margin: 0; }
+.card .marca { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; font-weight: 600; color: var(--naranja); margin: 0; }
+.card.aviso { border-left: 6px solid var(--amarillo); }
+
+.codigo { background: var(--hondo); border-radius: 16px; padding: 32px 36px; display: flex; flex-direction: column; }
+.codigo p { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; line-height: 1.5; color: var(--texto); margin: 0; white-space: nowrap; }
+.codigo .k { color: var(--lila); }
+.codigo .s { color: var(--amarillo); }
+.codigo .c { color: #8f84a0; }
+
+.tabla { width: 100%; font-size: 26px; color: var(--texto); font-family: 'Inter', Arial, sans-serif; }
+.tabla tr.cab { background: var(--hondo); }
+
+.paso { flex: 1; background: var(--panel); border-radius: 16px; padding: 28px 28px; display: flex; flex-direction: column; gap: 10px; }
+section.alt .paso { background: var(--fondo); }
+.paso h3 { font-size: 28px; font-weight: 700; color: var(--naranja); margin: 0; }
+.paso .txt { font-size: 24px; line-height: 1.35; color: var(--suave); margin: 0; }
+.flecha { width: 48px; height: 28px; background: var(--lila); align-self: center; flex: none; }
+
+.grande { font-size: 120px; font-weight: 700; line-height: 1; color: var(--naranja); margin: 0; }
+.cmd { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 32px; line-height: 1.5; margin: 0; color: var(--fondo); white-space: nowrap; }
+.cmdcaja { background: #ffe6d6; border-radius: 16px; padding: 32px 40px; display: flex; flex-direction: column; gap: 8px; }
+section.acento .eyebrow { color: var(--fondo); }
+section.acento .titulo { color: var(--fondo); font-size: 96px; }
+section.acento .lead { color: #3a2418; }
+
+.swatch { width: 100%; height: 96px; border-radius: 12px; }
+
+@keyframes sube { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0px); } }
+.anim { animation: sube 520ms ease-out both; animation-delay: calc(var(--i, 0) * 110ms); }
+
+/* ---- visor web ---- */
+html, body { margin: 0; background: #0b0810; }
+.barra { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center;
+  gap: 16px; padding: 10px 20px; background: rgba(11,8,16,.92); color: #c9bfd6; font: 15px Inter, Arial, sans-serif; }
+.barra a { color: #b69cff; text-decoration: none; margin-left: 16px; }
+.deck { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 24px 0 64px; }
+.marco { position: relative; width: min(96vw, 1600px); aspect-ratio: 16 / 9; overflow: hidden; border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.45); }
+.slide { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; }
+.slide h1, .slide h2, .slide h3, .slide p { margin-top: 0; }
+.slide table { border-collapse: collapse; }
+.slide th { text-align: left; }
+.slide td, .slide th { padding: .35em .6em; border-bottom: 1px solid #3a2f47; }
+.flecha { clip-path: polygon(0 30%, 60% 30%, 60% 0, 100% 50%, 60% 100%, 60% 70%, 0 70%); }
+@media print {
+  @page { size: 1920px 1080px; margin: 0; }
+  .barra { display: none; }
+  .deck { padding: 0; gap: 0; }
+  .marco { width: 1920px; height: 1080px; border-radius: 0; box-shadow: none; break-after: page; }
+  .slide { transform: none !important; }
+  .anim { animation: none; }
+}
+</style>
+</head>
+<body>
+<div class="barra"><span>Commit a Commit: cómo automatizamos el canal</span><span><a href="presentacion.pdf">Descargar PDF</a><a href="https://www.youtube.com/channel/UC5VvN3Wkh8wAPUPtcKfBgPg">Canal de YouTube</a></span></div>
+<main class="deck">
+<div class="marco"><section class="slide" id="cover" data-transition="fade" style="justify-content:space-between">
+<svg aria-label="Logo de Commit a Commit: historial de commits con tres nodos hechos y uno en progreso" width="520" height="80" viewBox="0 0 520 80"><line x1="40" y1="40" x2="340" y2="40" stroke="#b69cff" stroke-width="8"/><line x1="340" y1="40" x2="480" y2="40" stroke="#ffd36e" stroke-width="8" stroke-dasharray="14 12"/><circle cx="40" cy="40" r="26" fill="#b69cff"/><circle cx="190" cy="40" r="26" fill="#ff7a3d"/><circle cx="340" cy="40" r="26" fill="#ff7a3d"/><circle cx="480" cy="40" r="22" fill="#15101c" stroke="#ffd36e" stroke-width="7" stroke-dasharray="10 7"/></svg>
+<div>
+<p class="eyebrow">COMMIT A COMMIT · DETRÁS DE ESCENA</p>
+<h1 class="portada">Cómo automatizamos el canal</h1>
+<p class="lead" style="max-width:1400px">De una pregunta de entrevista iOS a un video publicado en YouTube, TikTok y LinkedIn, con dos comandos por pieza.</p>
+</div>
+<p class="nota" style="margin:0">Pipeline local en la Mac · Noviembre 2026</p>
+
+</section>
+</div><div class="marco"><section id="objetivo" class="slide alt" data-transition="fade">
+<p class="eyebrow">EL PUNTO DE PARTIDA</p>
+<h2 class="titulo">Aprender iOS en público, una pregunta a la vez</h2>
+<p class="lead">Cada pieza toma una pregunta típica de entrevista iOS y la cuenta en tres formatos, con tono de “aprendo y te lo cuento”, no de experto.</p>
+<div class="fila">
+<div class="card anim" style="--i:0"><p class="marca">01</p><h3>Post de LinkedIn</h3><p class="txt">Pregunta, respuesta corta, cuatro puntos clave, link al video y una pregunta para los comentarios.</p></div>
+<div class="card anim" style="--i:1"><p class="marca">02</p><h3>Infografía</h3><p class="txt">Oscura, 1080×1350: título, respuesta corta y un bloque de código Swift.</p></div>
+<div class="card anim" style="--i:2"><p class="marca">03</p><h3>Video con voz en off</h3><p class="txt">Largo de ~2 min para YouTube y vertical de ~30 s para Shorts y TikTok.</p></div>
+</div>
+
+</section>
+</div><div class="marco"><section class="slide" id="marca" data-transition="fade">
+<p class="eyebrow">IDENTIDAD</p>
+<h2 class="titulo">Nombre, paleta y tipografía</h2>
+<div class="fila" style="align-items:flex-start">
+<div class="col">
+<div class="card"><h3>Commit a Commit</h3><p class="txt">En inglés, Commit by Commit. Un commit a la vez: aprender de a poco y en público. Se descartó “Swift en Construcción”.</p></div>
+<div class="card"><h3>Inter + JetBrains Mono</h3><p class="txt">Inter para los textos y JetBrains Mono sin ligaduras para el código, así se lee igual que en Xcode.</p></div>
+</div>
+<div class="col">
+<div class="card" style="gap:20px"><h3>Ciruela + naranja Swift</h3>
+<div class="fila" style="gap:16px">
+<div class="col" style="gap:8px"><div class="swatch" style="background:#15101c;border:2px solid #3a2f47"></div><p class="dato">#15101c</p></div>
+<div class="col" style="gap:8px"><div class="swatch" style="background:#ff7a3d"></div><p class="dato">#ff7a3d</p></div>
+<div class="col" style="gap:8px"><div class="swatch" style="background:#b69cff"></div><p class="dato">#b69cff</p></div>
+<div class="col" style="gap:8px"><div class="swatch" style="background:#ffd36e"></div><p class="dato">#ffd36e</p></div>
+</div>
+<p class="txt">Fondo ciruela, naranja como acento, lila secundario y amarillo para lo “en progreso”. Reemplazó al azul marino con verde, que era la paleta típica de este tipo de contenido.</p></div>
+</div>
+</div>
+
+</section>
+</div><div class="marco"><section id="contenido" class="slide alt" data-transition="fade">
+<p class="eyebrow">EL CONTENIDO</p>
+<h2 class="titulo">Serie “Entrevista iOS”: 30 preguntas en 6 capítulos</h2>
+<div class="fila" style="gap:64px">
+<div style="flex:1.4">
+<table class="tabla">
+<tr class="cab"><th style="width:70%">Capítulo</th><th>Piezas</th></tr>
+<tr><td>1 · Fundamentos de Swift</td><td>001–010</td></tr>
+<tr><td>2 · Memoria y ARC</td><td>011–014</td></tr>
+<tr><td>3 · Concurrencia</td><td>015–020</td></tr>
+<tr><td>4 · UIKit y ciclo de vida</td><td>021–024</td></tr>
+<tr><td>5 · SwiftUI</td><td>025–027</td></tr>
+<tr><td>6 · Arquitectura y testing</td><td>028–030</td></tr>
+</table>
+</div>
+<div class="col">
+<div class="card"><h3>Banco de preguntas</h3><p class="txt">contenido/banco-preguntas.md ordena las 30 con capítulo, prioridad y estado.</p></div>
+<div class="card"><h3>Del básico al avanzado</h3><p class="txt">De struct vs class hasta unit tests con mocks, para que la lista de reproducción se pueda seguir en orden.</p></div>
+</div>
+</div>
+</section>
+</div><div class="marco"><section class="slide" id="pieza" data-transition="fade">
+<p class="eyebrow">UNA SOLA FUENTE</p>
+<h2 class="titulo">Todo sale de pieza.json</h2>
+<div class="fila" style="gap:48px">
+<div class="codigo" style="flex:1.15">
+<p>{</p>
+<p>&#160;&#160;<span class="k">"numero"</span>: 1,</p>
+<p>&#160;&#160;<span class="k">"pregunta"</span>: <span class="s">"¿struct o class?"</span>,</p>
+<p>&#160;&#160;<span class="k">"respuesta_corta"</span>: <span class="s">"…"</span>,</p>
+<p>&#160;&#160;<span class="k">"codigo"</span>: <span class="s">"struct PuntoS …"</span>,</p>
+<p>&#160;&#160;<span class="k">"escenas"</span>: [{</p>
+<p>&#160;&#160;&#160;&#160;<span class="k">"tipo"</span>: <span class="s">"codigo"</span>, <span class="k">"resaltar"</span>: [7, 8],</p>
+<p>&#160;&#160;&#160;&#160;<span class="k">"frases"</span>: [{ <span class="k">"es"</span>, <span class="k">"en"</span>, <span class="k">"audio"</span> }]</p>
+<p>&#160;&#160;}],</p>
+<p>&#160;&#160;<span class="k">"corto"</span>: { <span class="k">"titulo"</span>, <span class="k">"escenas"</span> },</p>
+<p>&#160;&#160;<span class="k">"youtube"</span>: { <span class="k">"titulo"</span>, <span class="k">"tags"</span> }</p>
+<p>}</p>
+</div>
+<div class="col" style="gap:20px">
+<div class="card"><p class="dato">escenas</p><p class="txt">El video largo: portada, respuesta, código, puntos clave y cierre.</p></div>
+<div class="card"><p class="dato">corto</p><p class="txt">El vertical de Shorts y TikTok, con sus propias frases.</p></div>
+<div class="card"><p class="dato">audio</p><p class="txt">Lo que lee la voz, con pausas o deletreos; el subtítulo muestra “es”.</p></div>
+</div>
+</div>
+<p class="nota">Regla: los textos de publicación no se editan a mano. Se cambia pieza.json y se regenera.</p>
+</section>
+</div><div class="marco"><section id="verificacion" class="slide alt" data-transition="fade">
+<p class="eyebrow">ANTES DE GRABAR</p>
+<h2 class="titulo">Todo el código se compila primero</h2>
+<p class="lead">Un video con un resultado equivocado no se corrige después. Los comentarios con resultados tienen que coincidir con lo que imprime Swift.</p>
+<div class="fila">
+<div class="card anim" style="--i:0"><h3>Swift puro</h3><p class="dato">swift archivo.swift</p><p class="txt">Se ejecuta y la salida se compara con los comentarios del código.</p></div>
+<div class="card anim" style="--i:1"><h3>UIKit y SwiftUI</h3><p class="dato">swiftc -typecheck</p><p class="txt">Typecheck con el SDK de iOS 17 del simulador.</p></div>
+<div class="card anim" style="--i:2"><h3>XCTest</h3><p class="dato">test de la 030</p><p class="txt">El test con mocks de la última pieza corre y pasa.</p></div>
+</div>
+</section>
+</div><div class="marco"><section class="slide" id="voz" data-transition="fade">
+<p class="eyebrow">LA VOZ</p>
+<h2 class="titulo">edge-tts con acento argentino</h2>
+<div class="fila">
+<div class="card anim" style="--i:0"><h3>es-AR-TomasNeural</h3><p class="txt">La voz elegida, a +5% de velocidad. Gratis y local: se genera en la Mac con voz/tts.py.</p></div>
+<div class="card anim" style="--i:1"><h3>Pronunciación</h3><p class="txt">voz/pronunciacion.json con ~60 términos: “commit” se dice comít, “iOS” se deletrea “ai o es” y PuntoS se lee “Punto ese”.</p></div>
+<div class="card anim" style="--i:2"><h3>Campo “audio”</h3><p class="txt">Cada frase puede tener su texto para la voz, con pausas (“…”) para nombrar variables de una letra.</p></div>
+</div>
+<div class="card aviso" style="margin-top:32px;flex:none"><h3>Antes de monetizar</h3><p class="txt">edge-tts no da derechos comerciales sobre el audio. Hay que migrar a Azure AI Speech (plan S0), que tiene la misma voz.</p></div>
+</section>
+</div><div class="marco"><section id="video" class="slide alt" data-transition="fade">
+<p class="eyebrow">EL VIDEO</p>
+<h2 class="titulo">Del HTML al video, sin editor</h2>
+<div class="fila" style="gap:16px">
+<div class="paso anim" style="--i:0"><h3>plantilla.html</h3><p class="txt">Diseño de cada escena con la marca</p></div>
+<div class="flecha"></div>
+<div class="paso anim" style="--i:1"><h3>Playwright</h3><p class="txt">Una captura PNG por escena</p></div>
+<div class="flecha"></div>
+<div class="paso anim" style="--i:2"><h3>edge-tts</h3><p class="txt">Un MP3 por escena; su duración marca el tiempo</p></div>
+<div class="flecha"></div>
+<div class="paso anim" style="--i:3"><h3>ffmpeg</h3><p class="txt">Une imagen y audio con fundidos</p></div>
+</div>
+<div class="fila" style="margin-top:40px">
+<div class="card"><h3>Largo 16:9</h3><p class="dato">1920×1080 · 90–110 s</p><p class="txt">Para YouTube, con subtítulos ES y EN aparte.</p></div>
+<div class="card"><h3>Vertical 9:16</h3><p class="dato">1080×1920 · 20–40 s</p><p class="txt">Para Shorts y TikTok, con subtítulos quemados y solo la parte clave del código.</p></div>
+<div class="card"><h3>Imágenes</h3><p class="dato">1080×1350 · 1280×720</p><p class="txt">Infografía y miniatura salen de la misma plantilla.</p></div>
+</div>
+</section>
+</div><div class="marco"><section class="slide" id="subtitulos" data-transition="fade">
+<p class="eyebrow">SUBTÍTULOS</p>
+<h2 class="titulo">Español e inglés, desde el mismo guion</h2>
+<p class="lead" style="max-width:1500px">Cada escena dura lo que dura su audio. Ese tiempo se reparte entre sus frases según el largo de cada una: preciso para el piloto, sin herramientas extra.</p>
+<div class="fila">
+<div class="card anim" style="--i:0"><h3>ES</h3><p class="txt">Sale del campo “es” de cada frase, aunque la voz lea otra cosa.</p></div>
+<div class="card anim" style="--i:1"><h3>EN</h3><p class="txt">La traducción va escrita en pieza.json, frase por frase.</p></div>
+<div class="card anim" style="--i:2"><h3>Vertical</h3><p class="txt">Subtítulos quemados en el video, porque muchos lo miran sin sonido.</p></div>
+<div class="card anim" style="--i:3"><h3>Próximo</h3><p class="txt">Whisper, para sincronizar palabra por palabra.</p></div>
+</div>
+</section>
+</div><div class="marco"><section id="build" class="slide alt" data-transition="fade">
+<p class="eyebrow">BUILD.PY</p>
+<h2 class="titulo">Un comando genera todo el material</h2>
+<div class="codigo" style="margin-bottom:40px"><p><span class="c">$</span> python3 pipeline/build.py contenido/004-copy-on-write</p></div>
+<table class="tabla">
+<tr class="cab"><th style="width:45%">Archivo en salida/</th><th>Para qué</th></tr>
+<tr><td>infografia.png</td><td>Post de LinkedIn</td></tr>
+<tr><td>miniatura.png</td><td>Miniatura de YouTube</td></tr>
+<tr><td>video.mp4 + subtitulos-es/en.srt</td><td>Video largo de YouTube</td></tr>
+<tr><td>vertical.mp4</td><td>Shorts y TikTok</td></tr>
+<tr><td>publicar.md</td><td>Textos para LinkedIn, YouTube, Shorts y TikTok</td></tr>
+</table>
+</section>
+</div><div class="marco"><section id="comandos" class="slide acento" data-transition="fade" style="justify-content:center">
+<p class="eyebrow">PUBLICACIÓN</p>
+<h2 class="titulo">Publicar una pieza = dos comandos</h2>
+<div class="cmdcaja anim" style="--i:1">
+<p class="cmd">subir_youtube.py&#160;&#160;&#160; contenido/NNN --fecha "…"</p>
+<p class="cmd">programar_buffer.py contenido/NNN --fecha "…"</p>
+</div>
+<p class="lead" style="margin-top:40px">El primero sube y programa el video largo y el Short. El segundo programa TikTok y LinkedIn a la misma hora.</p>
+</section>
+</div><div class="marco"><section class="slide" id="youtube" data-transition="fade">
+<p class="eyebrow">YOUTUBE DATA API V3</p>
+<h2 class="titulo">subir_youtube.py</h2>
+<div class="fila" style="gap:48px">
+<div style="flex:1.3">
+<table class="tabla">
+<tr class="cab"><th style="width:10%">#</th><th>Paso</th></tr>
+<tr><td>1</td><td>Sube video.mp4 con título, descripción, tags y fecha</td></tr>
+<tr><td>2</td><td>Miniatura personalizada</td></tr>
+<tr><td>3</td><td>Subtítulos en español e inglés</td></tr>
+<tr><td>4</td><td>Agrega el video a la lista “Entrevista iOS”</td></tr>
+<tr><td>5</td><td>Sube el Short con el link real al largo</td></tr>
+<tr><td>6</td><td>Guarda los IDs y regenera publicar.md</td></tr>
+</table>
+</div>
+<div class="col">
+<div class="card"><h3>Configuración</h3><p class="txt">Proyecto en Google Cloud, OAuth de app de escritorio, tipo Externo y publicada (el permiso no vence).</p></div>
+<div class="card"><h3>No duplica</h3><p class="txt">Si una pieza ya figura en youtube.json, la saltea. Con --simular muestra todo sin tocar YouTube.</p></div>
+</div>
+</div>
+</section>
+</div><div class="marco"><section id="auditoria" class="slide alt" data-transition="fade">
+<p class="eyebrow">REQUISITOS DE GOOGLE</p>
+<h2 class="titulo">Páginas públicas y auditoría</h2>
+<div class="fila">
+<div class="card anim" style="--i:0"><h3>GitHub Pages</h3><p class="dato">ibalborde.github.io/commit-a-commit</p><p class="txt">Inicio, privacidad y condiciones en español e inglés. Sin ellas, Google no deja publicar la app OAuth.</p></div>
+<div class="card anim" style="--i:1"><h3>Contacto del canal</h3><p class="dato">commitacommit.dev@gmail.com</p><p class="txt">Mail público aparte que reenvía al personal.</p></div>
+</div>
+<div class="fila" style="margin-top:32px">
+<div class="card anim" style="--i:2"><h3>Formulario enviado</h3><p class="txt">Respuestas y capturas en auditoria-youtube/. Pide políticas, flujo OAuth y prueba de la subida.</p></div>
+<div class="card aviso anim" style="--i:3"><h3>Sorpresa</h3><p class="txt">Sin auditoría, los videos subidos por API deberían quedar bloqueados en privado. Con este proyecto se pudieron publicar igual.</p></div>
+</div>
+</section>
+</div><div class="marco"><section class="slide" id="buffer" data-transition="fade">
+<p class="eyebrow">TIKTOK Y LINKEDIN</p>
+<h2 class="titulo">Buffer, por API</h2>
+<div class="fila">
+<div class="card aviso anim" style="--i:0"><h3>Por qué no la API de TikTok</h3><p class="txt">Sin auditoría de TikTok solo publica en privado y con la cuenta en privado. Para un canal público no sirve.</p></div>
+<div class="card anim" style="--i:1"><h3>Buffer ya está aprobado</h3><p class="txt">Plan gratis: 3 canales y 10 posts programados por canal. API GraphQL con clave personal.</p></div>
+</div>
+<div class="fila" style="margin-top:32px">
+<div class="card anim" style="--i:2"><h3>Medios en GitHub Pages</h3><p class="txt">Buffer solo toma archivos por URL pública: el video y la infografía se suben a web/media/ antes de programar.</p></div>
+<div class="card anim" style="--i:3"><h3>programar_buffer.py</h3><p class="txt">Mismos textos que publicar.md, link real al video en LinkedIn y los IDs en buffer.json.</p></div>
+</div>
+</section>
+</div><div class="marco"><section id="calendario" class="slide alt" data-transition="fade">
+<p class="eyebrow">EL CALENDARIO</p>
+<h2 class="titulo" style="margin-bottom:32px">Una pieza por día, a las 18:00</h2>
+<table class="tabla" style="font-size:24px">
+<tr class="cab"><th style="width:22%">Día</th><th style="width:54%">Pieza</th><th>Estado</th></tr>
+<tr><td>Mar 24/11</td><td>004 · Copy-on-Write</td><td>Programada</td></tr>
+<tr><td>Mié 25/11</td><td>005 · Enums con valores asociados</td><td>Programada</td></tr>
+<tr><td>Jue 26/11</td><td>006 · Closures @escaping</td><td>Programada</td></tr>
+<tr><td>Vie 27/11</td><td>007 · Niveles de acceso</td><td>Programada</td></tr>
+<tr><td>Sáb 28/11</td><td>008 · Programación orientada a protocolos</td><td>Programada</td></tr>
+<tr><td>Dom 29/11</td><td>009 · Generics y associatedtype</td><td>Programada</td></tr>
+<tr><td>Lun 30/11</td><td>010 · some vs any</td><td>Programada</td></tr>
+<tr><td>Mar 01/12</td><td>011 · Cómo funciona ARC</td><td>Se sube el 24/11</td></tr>
+<tr><td>Mié 02/12</td><td>012 · Retain cycles y weak self</td><td>Se sube el 24/11</td></tr>
+<tr><td>Jue 03/12</td><td>013 · weak vs unowned</td><td>Se sube el 24/11</td></tr>
+</table>
+
+</section>
+</div><div class="marco"><section class="slide" id="drive" data-transition="fade">
+<p class="eyebrow">OPERACIÓN</p>
+<h2 class="titulo">Sincronización y secretos</h2>
+<div class="fila">
+<div class="card anim" style="--i:0"><h3>Drive como fuente central</h3><p class="txt">La carpeta “Youtube” guarda todo, con CONTEXTO-PARA-CLAUDE.md y el historial, para seguir desde cualquier compu o sesión.</p></div>
+<div class="card anim" style="--i:1"><h3>rsync sin --delete</h3><p class="txt">Copia lo nuevo y deja afuera .venv, node_modules, escenas intermedias, secretos/ y web/media/.</p></div>
+<div class="card aviso anim" style="--i:2"><h3>secretos/</h3><p class="txt">Credencial de Google, token y clave de Buffer: solo en la Mac, con permisos 600. Nunca a Drive ni a GitHub.</p></div>
+</div>
+</section>
+</div><div class="marco"><section id="costos" class="slide alt" data-transition="fade">
+<p class="eyebrow">COSTOS</p>
+<div class="fila" style="gap:64px;align-items:flex-start">
+<div style="flex:0.8">
+<h2 class="titulo">Cuánto cuesta el piloto</h2>
+<p class="grande">USD 0</p>
+<p class="lead" style="margin-top:24px">Todo corre en la Mac o en planes gratis. El primer gasto llega con la monetización.</p>
+</div>
+<div style="flex:1.2">
+<table class="tabla" style="font-size:24px">
+<tr class="cab"><th style="width:34%">Herramienta</th><th style="width:40%">Uso</th><th>Costo</th></tr>
+<tr><td>edge-tts</td><td>Voz en off</td><td>Gratis</td></tr>
+<tr><td>Playwright + ffmpeg</td><td>Imágenes y video</td><td>Gratis</td></tr>
+<tr><td>YouTube Data API</td><td>Subir y programar</td><td>Gratis</td></tr>
+<tr><td>GitHub Pages</td><td>Páginas y medios</td><td>Gratis</td></tr>
+<tr><td>Buffer</td><td>TikTok y LinkedIn</td><td>Plan gratis</td></tr>
+<tr><td>Google Drive</td><td>Sincronización</td><td>Gratis</td></tr>
+<tr><td>Azure Speech S0</td><td>Voz con licencia</td><td>Al monetizar</td></tr>
+</table>
+</div>
+</div>
+</section>
+</div><div class="marco"><section class="slide" id="tropiezos" data-transition="fade">
+<p class="eyebrow">APRENDIZAJES</p>
+<h2 class="titulo" style="margin-bottom:32px">Lo que se rompió en el camino</h2>
+<table class="tabla" style="font-size:24px">
+<tr class="cab"><th style="width:46%">Problema</th><th>Solución</th></tr>
+<tr><td>“iOS” sonaba como “ios”</td><td>pronunciacion.json: se deletrea “ai o es”</td></tr>
+<tr><td>Error 403 access_denied</td><td>Agregar la cuenta como usuario de prueba</td></tr>
+<tr><td>Error 403 org_internal</td><td>App OAuth de tipo Externo</td></tr>
+<tr><td>El permiso vencía cada 7 días</td><td>Páginas públicas y app publicada</td></tr>
+<tr><td>invalidDescription en la 009</td><td>Cambiar &lt; y &gt; por ‹ y ›</td></tr>
+<tr><td>Cuota: ~1.300 unidades por pieza</td><td>Tandas de unas 7 piezas por día</td></tr>
+<tr><td>Buffer no acepta archivos</td><td>Medios en GitHub Pages</td></tr>
+</table>
+</section>
+</div><div class="marco"><section id="pendientes" class="slide alt" data-transition="fade">
+<p class="eyebrow">LO QUE SIGUE</p>
+<h2 class="titulo">Casi todo automatizado: lo que falta</h2>
+<div class="fila">
+<div class="col">
+<div class="card anim" style="--i:0"><h3>Esta semana</h3><p class="txt">Subir 011–013, reordenar la lista y confirmar que la 004 sale sola el 24/11 en las tres redes.</p></div>
+<div class="card anim" style="--i:1"><h3>Sigue a mano</h3><p class="txt">Vincular cada Short con su video largo en Studio: la API no lo permite.</p></div>
+</div>
+<div class="col">
+<div class="card aviso anim" style="--i:2"><h3>Antes de monetizar</h3><p class="txt">Voz con licencia comercial (Azure Speech S0) y respuesta de la auditoría de YouTube.</p></div>
+<div class="card anim" style="--i:3"><h3>Más adelante</h3><p class="txt">Whisper para los subtítulos, GitHub Actions con un cron semanal y un índice web de las piezas.</p></div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<script>
+// Escala cada slide de 1920x1080 al ancho de su marco.
+function ajustar() {
+  document.querySelectorAll('.marco').forEach(m => {
+    m.querySelector('.slide').style.transform = 'scale(' + (m.clientWidth / 1920) + ')';
+  });
+}
+addEventListener('resize', ajustar); ajustar();
+// Flechas o espacio: saltar a la slide siguiente o anterior.
+const marcos = [...document.querySelectorAll('.marco')];
+addEventListener('keydown', e => {
+  const dir = ['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key) ? 1 : ['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key) ? -1 : 0;
+  if (!dir) return;
+  e.preventDefault();
+  const y = scrollY + 80;
+  const actual = marcos.findIndex(m => m.offsetTop + m.offsetHeight > y);
+  const sig = marcos[Math.max(0, Math.min(marcos.length - 1, actual + dir))];
+  scrollTo({ top: sig.offsetTop - 64, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
